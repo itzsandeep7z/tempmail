@@ -258,16 +258,18 @@ function App() {
       <div className="soft-grid pointer-events-none absolute inset-0 opacity-70 dark:opacity-20" />
       <div className="pointer-events-none absolute left-[-8rem] top-[-8rem] h-72 w-72 rounded-full bg-sky-300/20 blur-3xl dark:bg-sky-500/10" />
 
-      <main className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <main className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         <header className={classNames('mb-6 rounded-[2rem] border p-5 backdrop-blur-2xl sm:p-6', theme.shell)}>
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4">
-              <LogoMark />
-              <div>
+            <div className="flex items-start gap-4 sm:items-center">
+              <div className="shrink-0">
+                <LogoMark />
+              </div>
+              <div className="min-w-0">
                 <p className={classNames('text-xs font-semibold uppercase tracking-[0.34em]', theme.dark ? 'text-cyan-300' : 'text-sky-700')}>
                   TempMail Buzz
                 </p>
-                <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">Temporary email, done properly.</h1>
+                <h1 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">Temporary email, done properly.</h1>
                 <p className={classNames('mt-2 text-sm leading-7', theme.muted)}>
                   Generate an address, keep it across refresh, and read messages in one clean interface.
                 </p>
@@ -301,15 +303,15 @@ function App() {
         <section className="grid gap-4 xl:grid-cols-[0.92fr_1.08fr]">
           <div className="grid gap-4">
             <section className={classNames('rounded-[2rem] border p-5 backdrop-blur-2xl', theme.shell)}>
-              <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0 flex-1">
                   <p className={classNames('text-xs font-semibold uppercase tracking-[0.3em]', theme.muted)}>Current Address</p>
                   <div className={classNames('mt-3 rounded-[1.4rem] border p-4', theme.panel)}>
-                    <p className="break-all text-xl font-semibold">{session?.address || 'Generate an email address to begin'}</p>
+                    <p className="break-all text-base font-semibold leading-8 sm:text-xl">{session?.address || 'Generate an email address to begin'}</p>
                   </div>
                 </div>
 
-                <div className="grid min-w-[220px] gap-2 sm:grid-cols-3 xl:grid-cols-1">
+                <div className="grid w-full gap-2 sm:grid-cols-3 lg:w-auto lg:min-w-[220px] lg:grid-cols-1">
                   <PrimaryButton gradient={theme.primary} disabled={loadingGenerate} onClick={handleGenerateEmail}>
                     {loadingGenerate ? 'Generating...' : 'Generate Email'}
                   </PrimaryButton>
@@ -339,7 +341,7 @@ function App() {
               </div>
 
               <div className={classNames('rounded-[1.4rem] border', theme.panel)}>
-                <div className={classNames('grid grid-cols-[1fr_1.05fr_72px] gap-3 border-b px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em]', theme.dark ? 'border-white/10 text-slate-400' : 'border-slate-200 text-slate-500')}>
+                <div className={classNames('hidden gap-3 border-b px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] sm:grid sm:grid-cols-[1fr_1.05fr_72px]', theme.dark ? 'border-white/10 text-slate-400' : 'border-slate-200 text-slate-500')}>
                   <span>Sender</span>
                   <span>Subject</span>
                   <span>Open</span>
@@ -357,22 +359,24 @@ function App() {
                         type="button"
                         onClick={() => handleSelectMessage(message.id)}
                         className={classNames(
-                          'grid w-full grid-cols-[1fr_1.05fr_72px] gap-3 border-b px-4 py-4 text-left transition',
+                          'grid w-full gap-3 border-b px-4 py-4 text-left transition sm:grid-cols-[1fr_1.05fr_72px]',
                           theme.dark ? 'border-white/10 hover:bg-white/[0.03]' : 'border-slate-200 hover:bg-white/70',
                           selectedMessageId === message.id && theme.selected,
                         )}
                       >
                         <div className="min-w-0">
+                          <p className={classNames('mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] sm:hidden', theme.muted)}>Sender</p>
                           <p className="truncate text-sm font-semibold">{message.from?.address || 'Unknown sender'}</p>
                           <p className={classNames('mt-1 truncate text-xs', theme.muted)}>{formatDate(message.createdAt)}</p>
                         </div>
                         <div className="min-w-0">
+                          <p className={classNames('mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] sm:hidden', theme.muted)}>Subject</p>
                           <p className="truncate text-sm font-semibold">{message.subject || '(No subject)'}</p>
                           <p className={classNames('mt-1 truncate text-xs', theme.muted)}>
                             {message.intro || 'Open to read full content.'}
                           </p>
                         </div>
-                        <div className="flex items-center justify-start">
+                        <div className="flex items-center justify-start sm:justify-start">
                           <span className={classNames('rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]', theme.badge)}>
                             Open
                           </span>
@@ -484,7 +488,7 @@ function PrimaryButton({ children, disabled, gradient, onClick }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={classNames('rounded-2xl bg-gradient-to-r px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50', gradient)}
+      className={classNames('w-full rounded-2xl bg-gradient-to-r px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50', gradient)}
     >
       {children}
     </button>
@@ -497,7 +501,7 @@ function SecondaryButton({ children, disabled, look, onClick }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={classNames('rounded-2xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50', look)}
+      className={classNames('w-full rounded-2xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50', look)}
     >
       {children}
     </button>
