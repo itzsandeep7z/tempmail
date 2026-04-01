@@ -523,7 +523,7 @@ function InfoCard({ dark, label, value }) {
 
 function SmallPanel({ children, theme, title }) {
   return (
-    <div className={classNames('rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
+    <div className={classNames('flex min-h-[180px] flex-col justify-center rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
       <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>{title}</p>
       <p className={classNames('mt-3 text-sm leading-7', theme.strongMuted)}>{children}</p>
     </div>
@@ -532,7 +532,7 @@ function SmallPanel({ children, theme, title }) {
 
 function SignaturePanel({ theme }) {
   return (
-    <div className={classNames('rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
+    <div className={classNames('flex min-h-[180px] flex-col justify-center rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
       <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>Signature</p>
       <p
         className={classNames(
