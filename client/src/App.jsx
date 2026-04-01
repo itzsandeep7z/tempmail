@@ -458,9 +458,7 @@ function App() {
               <SmallPanel title="Session" theme={theme}>
                 Stays the same after refresh while the active session remains valid.
               </SmallPanel>
-              <SmallPanel title="Signature" theme={theme}>
-                Designed and crafted by Sandeep Patel.
-              </SmallPanel>
+              <SignaturePanel theme={theme} />
             </section>
           </div>
         </section>
@@ -527,15 +525,24 @@ function SmallPanel({ children, theme, title }) {
   return (
     <div className={classNames('rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
       <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>{title}</p>
+      <p className={classNames('mt-3 text-sm leading-7', theme.strongMuted)}>{children}</p>
+    </div>
+  );
+}
+
+function SignaturePanel({ theme }) {
+  return (
+    <div className={classNames('rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
+      <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>Signature</p>
       <p
         className={classNames(
-          'mt-3 text-sm leading-7',
-          title === 'Signature' ? 'signature-font text-2xl sm:text-[2rem]' : theme.strongMuted,
-          title === 'Signature' ? (theme.dark ? 'text-cyan-100' : 'text-sky-700') : '',
+          'signature-font mt-4 text-[2.4rem] leading-none sm:text-[3rem]',
+          theme.dark ? 'text-cyan-100' : 'text-sky-700',
         )}
       >
-        {children}
+        Sandeep Patel
       </p>
+      <p className={classNames('mt-2 text-xs uppercase tracking-[0.22em]', theme.muted)}>Founder and Builder</p>
     </div>
   );
 }
