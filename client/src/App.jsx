@@ -455,8 +455,8 @@ function App() {
             </section>
 
             <section className="grid gap-4 sm:grid-cols-2">
-              <SmallPanel title="Session" theme={theme}>
-                Stays the same after refresh while the active session remains valid.
+              <SmallPanel title="Experience" theme={theme}>
+                Built for quick access, clean reading, and a smooth temporary inbox flow across desktop and mobile.
               </SmallPanel>
               <SignaturePanel theme={theme} />
             </section>
@@ -542,7 +542,6 @@ function SignaturePanel({ theme }) {
       >
         Sandeep Patel
       </p>
-      <p className={classNames('mt-2 text-xs uppercase tracking-[0.22em]', theme.muted)}>Founder and Builder</p>
     </div>
   );
 }
