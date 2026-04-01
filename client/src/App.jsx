@@ -93,6 +93,7 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [isVisible, setIsVisible] = useState(() => !document.hidden);
   const intervalRef = useRef(null);
+  const readerRef = useRef(null);
 
   const theme = THEMES[themeKey] || THEMES.light;
 
@@ -207,6 +208,11 @@ function App() {
       setMessageCache((currentCache) => ({ ...currentCache, [messageId]: data.message }));
       setSelectedMessage(data.message);
       setError('');
+      if (window.innerWidth < 768) {
+        window.setTimeout(() => {
+          readerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      }
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -304,6 +310,45 @@ function App() {
           </div>
         ) : null}
 
+        <div
+          className={classNames(
+            'pointer-events-none fixed bottom-5 right-5 z-50 transition-all duration-300',
+            copied ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0',
+          )}
+        >
+          <div
+            className={classNames(
+              'rounded-2xl border px-4 py-3 text-sm font-medium shadow-2xl backdrop-blur-xl',
+              theme.dark
+                ? 'border-cyan-400/20 bg-slate-950/85 text-cyan-100'
+                : 'border-sky-200 bg-white/90 text-sky-700',
+            )}
+          >
+            Email copied
+          </div>
+        </div>
+
+        <section className="mb-4 grid gap-3 sm:grid-cols-3">
+          <StatCard
+            theme={theme}
+            title="Instant Inbox"
+            value="Ready in seconds"
+            description="Generate a fresh address and start receiving mail without extra steps."
+          />
+          <StatCard
+            theme={theme}
+            title="Auto Refresh"
+            value="Live message checks"
+            description="Inbox updates quietly in the background while you stay on the page."
+          />
+          <StatCard
+            theme={theme}
+            title="Built For Any Screen"
+            value="Mobile to desktop"
+            description="Cleaner reading flow and responsive spacing across devices."
+          />
+        </section>
+
         <section className="grid gap-4 xl:grid-cols-[0.92fr_1.08fr]">
           <div className="grid gap-4">
             <section className={classNames('rounded-[2rem] border p-5 backdrop-blur-2xl', theme.shell)}>
@@ -353,9 +398,21 @@ function App() {
 
                 <div className="premium-scroll max-h-[34rem] overflow-y-auto">
                   {!session?.sessionId ? (
-                    <EmptyState isDark={theme.dark} title="No inbox yet" description="Create an address first." />
+                    <EmptyState
+                      isDark={theme.dark}
+                      title="No inbox yet"
+                      description="Generate a temporary address to open your inbox and start receiving messages."
+                      icon="mailbox"
+                    />
+                  ) : loadingInbox && !messages.length ? (
+                    <SkeletonInboxRows theme={theme} />
                   ) : !messages.length ? (
-                    <EmptyState isDark={theme.dark} title="Inbox is empty" description="Waiting for incoming messages." />
+                    <EmptyState
+                      isDark={theme.dark}
+                      title="Inbox is empty"
+                      description="Your address is active. Incoming emails will appear here as soon as they arrive."
+                      icon="spark"
+                    />
                   ) : (
                     messages.map((message) => (
                       <button
@@ -366,16 +423,29 @@ function App() {
                           'grid w-full gap-3 border-b px-4 py-4 text-left transition sm:grid-cols-[1fr_1.05fr_72px]',
                           theme.dark ? 'border-white/10 hover:bg-white/[0.03]' : 'border-slate-200 hover:bg-white/70',
                           selectedMessageId === message.id && theme.selected,
+                          !message.seen ? (theme.dark ? 'bg-cyan-400/[0.04]' : 'bg-sky-50/60') : '',
                         )}
                       >
                         <div className="min-w-0 sm:pr-2">
                           <p className={classNames('mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] sm:hidden', theme.muted)}>Sender</p>
-                          <p className="truncate text-sm font-semibold">{message.from?.address || 'Unknown sender'}</p>
+                          <div className="flex items-center gap-2">
+                            {!message.seen ? (
+                              <span className={classNames('h-2.5 w-2.5 rounded-full', theme.dark ? 'bg-cyan-300' : 'bg-sky-500')} />
+                            ) : null}
+                            <p className="truncate text-sm font-semibold">{message.from?.address || 'Unknown sender'}</p>
+                          </div>
                           <p className={classNames('mt-1 text-xs', theme.muted)}>{formatDate(message.createdAt)}</p>
                         </div>
                         <div className="min-w-0 sm:pr-2">
                           <p className={classNames('mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] sm:hidden', theme.muted)}>Subject</p>
-                          <p className="truncate text-sm font-semibold">{message.subject || '(No subject)'}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="truncate text-sm font-semibold">{message.subject || '(No subject)'}</p>
+                            {!message.seen ? (
+                              <span className={classNames('rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em]', theme.badge)}>
+                                New
+                              </span>
+                            ) : null}
+                          </div>
                           <p className={classNames('mt-1 overflow-hidden text-xs leading-6', theme.muted)}>
                             {message.intro || 'Open to read full content.'}
                           </p>
@@ -394,7 +464,7 @@ function App() {
           </div>
 
           <div className="grid gap-4">
-            <section className={classNames('rounded-[2rem] border p-5 backdrop-blur-2xl', theme.shell)}>
+            <section ref={readerRef} className={classNames('rounded-[2rem] border p-5 backdrop-blur-2xl', theme.shell)}>
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>Reader</p>
@@ -407,9 +477,14 @@ function App() {
 
               <div className={classNames('rounded-[1.4rem] border p-5', theme.panel)}>
                 {!session?.sessionId ? (
-                  <EmptyState isDark={theme.dark} title="Reader waiting" description="The full email will appear here." />
+                  <EmptyState
+                    isDark={theme.dark}
+                    title="Reader waiting"
+                    description="Open any message from the inbox to view the full content here."
+                    icon="reader"
+                  />
                 ) : loadingMessage ? (
-                  <EmptyState isDark={theme.dark} title="Loading message" description="Fetching full content..." />
+                  <SkeletonMessageView theme={theme} />
                 ) : selectedMessage ? (
                   <article className="space-y-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -449,7 +524,12 @@ function App() {
                     ) : null}
                   </article>
                 ) : (
-                  <EmptyState isDark={theme.dark} title="Choose a message" description="Select an email from the inbox." />
+                  <EmptyState
+                    isDark={theme.dark}
+                    title="Choose a message"
+                    description="Pick an email from the inbox to read the full body, details, and preview."
+                    icon="message"
+                  />
                 )}
               </div>
             </section>
@@ -542,18 +622,125 @@ function SignaturePanel({ theme }) {
       >
         Sandeep Patel
       </p>
+      <p className={classNames('mt-3 text-xs uppercase tracking-[0.24em]', theme.muted)}>tempmail.buzz</p>
     </div>
   );
 }
 
-function EmptyState({ title, description, isDark }) {
+function StatCard({ description, theme, title, value }) {
+  return (
+    <div className={classNames('rounded-[1.6rem] border p-4 backdrop-blur-2xl', theme.shell)}>
+      <p className={classNames('text-[11px] font-semibold uppercase tracking-[0.24em]', theme.muted)}>{title}</p>
+      <p className="display-font mt-3 text-xl font-semibold tracking-[-0.03em]">{value}</p>
+      <p className={classNames('mt-2 text-sm leading-6', theme.strongMuted)}>{description}</p>
+    </div>
+  );
+}
+
+function SkeletonInboxRows({ theme }) {
+  return (
+    <div className="space-y-0">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className={classNames(
+            'grid gap-3 border-b px-4 py-4 sm:grid-cols-[1fr_1.05fr_72px]',
+            theme.dark ? 'border-white/10' : 'border-slate-200',
+          )}
+        >
+          <div className="space-y-2">
+            <div className={classNames('h-4 w-32 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+            <div className={classNames('h-3 w-24 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+          </div>
+          <div className="space-y-2">
+            <div className={classNames('h-4 w-40 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+            <div className={classNames('h-3 w-full animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+          </div>
+          <div className={classNames('h-8 w-16 animate-pulse self-center rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SkeletonMessageView({ theme }) {
+  return (
+    <div className="space-y-5">
+      <div className="space-y-3">
+        <div className={classNames('h-3 w-28 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+        <div className={classNames('h-10 w-3/4 animate-pulse rounded-2xl', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div key={index} className={classNames('rounded-2xl border p-4', theme.dark ? 'border-white/10 bg-white/[0.03]' : 'border-slate-200 bg-white/88')}>
+            <div className={classNames('h-3 w-16 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+            <div className={classNames('mt-3 h-4 w-24 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+          </div>
+        ))}
+      </div>
+      <div className={classNames('rounded-[1.4rem] border p-4 sm:p-5', theme.panel)}>
+        <div className={classNames('h-3 w-24 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+        <div className="mt-4 space-y-3">
+          <div className={classNames('h-3 w-full animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+          <div className={classNames('h-3 w-11/12 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+          <div className={classNames('h-3 w-4/5 animate-pulse rounded-full', theme.dark ? 'bg-white/10' : 'bg-slate-200')} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ title, description, isDark, icon = 'mailbox' }) {
   return (
     <div className="flex min-h-[16rem] items-center justify-center p-6 text-center">
       <div>
+        <div
+          className={classNames(
+            'mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border',
+            isDark ? 'border-white/10 bg-white/[0.05] text-cyan-100' : 'border-slate-200 bg-white text-sky-700',
+          )}
+        >
+          <EmptyStateIcon icon={icon} />
+        </div>
         <p className={classNames('text-lg font-semibold', isDark ? 'text-white' : 'text-slate-900')}>{title}</p>
         <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
       </div>
     </div>
+  );
+}
+
+function EmptyStateIcon({ icon }) {
+  if (icon === 'reader') {
+    return (
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H20v16H7.5A2.5 2.5 0 0 0 5 21V5.5Z" />
+        <path d="M8 7h8M8 11h8M8 15h5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (icon === 'message') {
+    return (
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7A2.5 2.5 0 0 1 17.5 16H10l-4 4v-4H6.5A2.5 2.5 0 0 1 4 13.5v-7Z" />
+      </svg>
+    );
+  }
+
+  if (icon === 'spark') {
+    return (
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3Z" />
+        <path d="m18.5 15 .8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2ZM5.5 14l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z" />
+      <path d="m5 7 7 5 7-5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
