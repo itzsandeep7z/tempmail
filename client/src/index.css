@@ -4,6 +4,9 @@
 
 :root {
   color-scheme: light;
+  --font-body: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --font-display: "Outfit", "Inter", "Segoe UI", sans-serif;
+  --font-signature: "Allura", cursive;
 }
 
 html {
@@ -12,10 +15,11 @@ html {
 
 body {
   @apply min-h-screen antialiased;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-body);
   background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 24%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.12), transparent 28%),
+    linear-gradient(180deg, #f7fbff 0%, #eef4ff 52%, #f8fafc 100%);
   color: #0f172a;
 }
 
@@ -34,9 +38,32 @@ body {
   background-size: 32px 32px;
 }
 
+.display-font {
+  font-family: var(--font-display);
+}
+
+.signature-font {
+  font-family: var(--font-signature);
+}
+
+.premium-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(96, 165, 250, 0.45) transparent;
+}
+
+.premium-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.premium-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.55), rgba(99, 102, 241, 0.55));
+  border-radius: 999px;
+}
+
 .dark body {
   background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.10), transparent 20%),
-    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 18%),
+    radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 24%),
+    linear-gradient(180deg, #020617 0%, #081122 48%, #0f172a 100%);
   color: #e2e8f0;
 }

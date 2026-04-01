@@ -9,21 +9,21 @@ const THEMES = {
     label: 'Light',
     dark: false,
     pageText: 'text-slate-900',
-    shell: 'border-slate-200/80 bg-white/78',
-    panel: 'border-slate-200 bg-white/88',
+    shell: 'border-white/70 bg-white/72 shadow-[0_22px_60px_-28px_rgba(15,23,42,0.28)]',
+    panel: 'border-slate-200/80 bg-white/90',
     muted: 'text-slate-500',
     strongMuted: 'text-slate-600',
-    button: 'border-slate-200 bg-white text-slate-900 hover:bg-slate-50',
+    button: 'border-slate-200/80 bg-white/90 text-slate-900 hover:bg-slate-50',
     badge: 'border-sky-200 bg-sky-50 text-sky-700',
     primary: 'from-sky-500 via-blue-500 to-indigo-500',
-    selected: 'bg-sky-50',
+    selected: 'bg-sky-50/80',
   },
   dark: {
     label: 'Dark',
     dark: true,
     pageText: 'text-slate-100',
-    shell: 'border-white/10 bg-slate-950/55',
-    panel: 'border-white/10 bg-white/[0.04]',
+    shell: 'border-white/10 bg-slate-950/62 shadow-[0_24px_70px_-32px_rgba(8,145,178,0.45)]',
+    panel: 'border-white/10 bg-white/[0.05]',
     muted: 'text-slate-400',
     strongMuted: 'text-slate-300',
     button: 'border-white/10 bg-white/5 text-white hover:bg-white/10',
@@ -257,9 +257,11 @@ function App() {
     <div className={classNames('relative min-h-screen overflow-hidden transition-colors duration-300', theme.pageText)}>
       <div className="soft-grid pointer-events-none absolute inset-0 opacity-70 dark:opacity-20" />
       <div className="pointer-events-none absolute left-[-8rem] top-[-8rem] h-72 w-72 rounded-full bg-sky-300/20 blur-3xl dark:bg-sky-500/10" />
+      <div className="pointer-events-none absolute right-[-5rem] top-[18rem] h-56 w-56 rounded-full bg-indigo-300/15 blur-3xl dark:bg-cyan-400/10" />
+      <div className="pointer-events-none absolute bottom-10 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-blue-200/20 blur-3xl dark:bg-indigo-500/10" />
 
       <main className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-        <header className={classNames('mb-6 rounded-[2rem] border p-5 backdrop-blur-2xl sm:p-6', theme.shell)}>
+        <header className={classNames('mb-6 overflow-hidden rounded-[2rem] border p-5 backdrop-blur-2xl sm:p-6', theme.shell)}>
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-4 sm:items-center">
               <div className="shrink-0">
@@ -269,14 +271,16 @@ function App() {
                 <p className={classNames('text-xs font-semibold uppercase tracking-[0.34em]', theme.dark ? 'text-cyan-300' : 'text-sky-700')}>
                   TempMail Buzz
                 </p>
-                <h1 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">Temporary email, done properly.</h1>
-                <p className={classNames('mt-2 text-sm leading-7', theme.muted)}>
+                <h1 className="display-font mt-2 max-w-xl text-3xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+                  Temporary email, done properly.
+                </h1>
+                <p className={classNames('mt-3 max-w-xl text-sm leading-7 sm:text-[15px]', theme.muted)}>
                   Generate an address, keep it across refresh, and read messages in one clean interface.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 self-start lg:self-auto">
               {Object.entries(THEMES).map(([key, value]) => (
                 <button
                   key={key}
@@ -306,7 +310,7 @@ function App() {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0 flex-1">
                   <p className={classNames('text-xs font-semibold uppercase tracking-[0.3em]', theme.muted)}>Current Address</p>
-                  <div className={classNames('mt-3 rounded-[1.4rem] border p-4', theme.panel)}>
+                  <div className={classNames('mt-3 rounded-[1.4rem] border p-4 shadow-inner', theme.panel)}>
                     <p className="break-all text-base font-semibold leading-8 sm:text-xl">{session?.address || 'Generate an email address to begin'}</p>
                   </div>
                 </div>
@@ -347,7 +351,7 @@ function App() {
                   <span>Open</span>
                 </div>
 
-                <div className="max-h-[34rem] overflow-y-auto">
+                <div className="premium-scroll max-h-[34rem] overflow-y-auto">
                   {!session?.sessionId ? (
                     <EmptyState isDark={theme.dark} title="No inbox yet" description="Create an address first." />
                   ) : !messages.length ? (
@@ -364,20 +368,20 @@ function App() {
                           selectedMessageId === message.id && theme.selected,
                         )}
                       >
-                        <div className="min-w-0">
+                        <div className="min-w-0 sm:pr-2">
                           <p className={classNames('mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] sm:hidden', theme.muted)}>Sender</p>
                           <p className="truncate text-sm font-semibold">{message.from?.address || 'Unknown sender'}</p>
-                          <p className={classNames('mt-1 truncate text-xs', theme.muted)}>{formatDate(message.createdAt)}</p>
+                          <p className={classNames('mt-1 text-xs', theme.muted)}>{formatDate(message.createdAt)}</p>
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 sm:pr-2">
                           <p className={classNames('mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] sm:hidden', theme.muted)}>Subject</p>
                           <p className="truncate text-sm font-semibold">{message.subject || '(No subject)'}</p>
-                          <p className={classNames('mt-1 truncate text-xs', theme.muted)}>
+                          <p className={classNames('mt-1 overflow-hidden text-xs leading-6', theme.muted)}>
                             {message.intro || 'Open to read full content.'}
                           </p>
                         </div>
                         <div className="flex items-center justify-start sm:justify-start">
-                          <span className={classNames('rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]', theme.badge)}>
+                          <span className={classNames('rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] shadow-sm', theme.badge)}>
                             Open
                           </span>
                         </div>
@@ -394,7 +398,7 @@ function App() {
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>Reader</p>
-                  <h2 className="mt-2 text-2xl font-semibold">Message View</h2>
+                  <h2 className="display-font mt-2 text-2xl font-semibold tracking-[-0.03em]">Message View</h2>
                 </div>
                 <span className={classNames('rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]', theme.badge)}>
                   {selectedMessage ? 'Loaded' : 'Idle'}
@@ -408,12 +412,14 @@ function App() {
                   <EmptyState isDark={theme.dark} title="Loading message" description="Fetching full content..." />
                 ) : selectedMessage ? (
                   <article className="space-y-5">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
                         <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>Selected Message</p>
-                        <h3 className="mt-3 text-3xl font-semibold">{selectedMessage.subject || '(No subject)'}</h3>
+                        <h3 className="display-font mt-3 break-words text-2xl font-semibold leading-tight tracking-[-0.03em] sm:text-3xl">
+                          {selectedMessage.subject || '(No subject)'}
+                        </h3>
                       </div>
-                      <span className={classNames('rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]', theme.badge)}>
+                      <span className={classNames('w-fit rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]', theme.badge)}>
                         {selectedMessage.attachments?.length || 0} attachments
                       </span>
                     </div>
@@ -425,9 +431,9 @@ function App() {
                       <InfoCard dark={theme.dark} label="Message Id" value={selectedMessage.id} />
                     </div>
 
-                    <div className={classNames('rounded-[1.4rem] border p-5', theme.panel)}>
+                    <div className={classNames('rounded-[1.4rem] border p-4 sm:p-5', theme.panel)}>
                       <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>Text Content</p>
-                      <div className="mt-4 whitespace-pre-wrap text-sm leading-7">{selectedPreview?.text}</div>
+                      <div className="mt-4 whitespace-pre-wrap text-sm leading-7 sm:text-[15px]">{selectedPreview?.text}</div>
                     </div>
 
                     {selectedPreview?.html ? (
@@ -436,7 +442,7 @@ function App() {
                         <iframe
                           title="HTML email preview"
                           srcDoc={selectedPreview.html}
-                          className="mt-4 h-80 w-full rounded-[1.4rem] border border-slate-200 bg-white"
+                          className="mt-4 h-64 w-full rounded-[1.4rem] border border-slate-200 bg-white sm:h-80"
                           sandbox=""
                         />
                       </div>
@@ -465,7 +471,7 @@ function App() {
 
 function LogoMark() {
   return (
-    <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] border border-white/20 bg-white/10 backdrop-blur-xl">
+    <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] border border-white/20 bg-white/10 shadow-[0_20px_40px_-24px_rgba(59,130,246,0.9)] backdrop-blur-xl">
       <svg viewBox="0 0 64 64" className="h-10 w-10" aria-hidden="true">
         <defs>
           <linearGradient id="bestLogo" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -488,7 +494,7 @@ function PrimaryButton({ children, disabled, gradient, onClick }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={classNames('w-full rounded-2xl bg-gradient-to-r px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50', gradient)}
+      className={classNames('display-font w-full rounded-2xl bg-gradient-to-r px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50', gradient)}
     >
       {children}
     </button>
@@ -501,7 +507,7 @@ function SecondaryButton({ children, disabled, look, onClick }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={classNames('w-full rounded-2xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50', look)}
+      className={classNames('display-font w-full rounded-2xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50', look)}
     >
       {children}
     </button>
@@ -521,7 +527,15 @@ function SmallPanel({ children, theme, title }) {
   return (
     <div className={classNames('rounded-[1.6rem] border p-5 backdrop-blur-2xl', theme.shell)}>
       <p className={classNames('text-xs font-semibold uppercase tracking-[0.28em]', theme.muted)}>{title}</p>
-      <p className={classNames('mt-3 text-sm leading-7', theme.strongMuted)}>{children}</p>
+      <p
+        className={classNames(
+          'mt-3 text-sm leading-7',
+          title === 'Signature' ? 'signature-font text-2xl sm:text-[2rem]' : theme.strongMuted,
+          title === 'Signature' ? (theme.dark ? 'text-cyan-100' : 'text-sky-700') : '',
+        )}
+      >
+        {children}
+      </p>
     </div>
   );
 }
