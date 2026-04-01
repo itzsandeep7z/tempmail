@@ -1,6 +1,6 @@
 # Temporary Mail Website
 
-This is a student project focused on building a temporary mail web application with modern frontend and backend tools. The project also explores AI integration ideas for improving user interaction, automation, and future smart features.
+This is my temporary mail project built with React and Node.js. I made it to create disposable email addresses through a simple web interface and to keep the full flow working from frontend to backend in one project.
 
 ## Tech Stack
 
@@ -9,35 +9,30 @@ This is a student project focused on building a temporary mail web application w
 - Tailwind CSS
 - Node.js
 - Express
-- AI integration concepts
 
-## Project Objective
+## About The Project
 
-The goal of this project is to create a simple and responsive temporary mail platform where users can generate temporary email addresses and manage messages through a clean web interface. Along with the core system, the project is designed as a learning exercise in full-stack development and AI-assisted application design.
+The main idea behind this project was to build a temporary email website that feels fast and simple to use. I wanted the frontend to stay clean while the backend handled the main logic and requests. I also wanted the project structure to be easy to manage for local development and deployment.
 
 ## Features
 
-- Temporary email workflow
-- Responsive frontend interface
-- Backend-based request handling
-- Clean full-stack project structure
-- Scope for AI-based enhancements
+- Generate temporary email addresses
+- View inbox messages through the web app
+- Responsive frontend layout
+- Backend handling for main mail operations
+- Single project setup for frontend and backend
 
 ## AI Integration
 
-This project includes the idea of AI integration to make the platform smarter and more user-friendly. AI can be used in future improvements such as smart message categorization, spam pattern detection, automated reply suggestions, and better user assistance.
+I also explored the idea of adding AI-based features to this project. The goal was not to overcomplicate the current version, but to keep space for future improvements like message sorting, spam filtering, smart suggestions, or better user-side assistance.
 
 ## Challenges Faced
 
-- Managing communication between frontend and backend during development
-- Handling environment configuration across multiple parts of the project
-- Dealing with deployment setup and production build issues
-- Organizing project structure in a clear and maintainable way
-- Understanding how AI features can be planned and integrated into a practical web project
-
-## Learning Outcome
-
-This project helped in understanding full-stack application development, deployment structure, API handling, and how AI ideas can be combined with web applications in a practical student project.
+- Syncing frontend requests with backend responses properly
+- Handling CORS and environment settings during development
+- Making the production build work correctly with both client and server
+- Keeping the code structure clean while working on multiple parts of the app
+- Planning AI-related ideas in a way that still makes sense for a real product
 
 ## Notes
 
