@@ -263,39 +263,41 @@ app.use((error, _request, response, _next) => {
   });
 });
 
-// Periodic cleanup prevents expired sessions and old limiter entries from piling up.
-const cleanupTimer = setInterval(() => {
-  const now = Date.now();
-
-  for (const [sessionId, session] of sessions.entries()) {
-    if (session.expiresAt <= now) {
-      sessions.delete(sessionId);
-    }
-  }
-
-  for (const [key, entry] of rateLimitStore.entries()) {
-    if (entry.resetAt <= now) {
-      rateLimitStore.delete(key);
-    }
-  }
-}, Math.min(SESSION_TTL_MS, 10 * 60 * 1000));
-
-cleanupTimer.unref();
-
-app.use(express.static(clientDistPath));
-
-app.get('*', (request, response, next) => {
-  if (
-    request.path.startsWith('/message') ||
-    request.path === '/messages' ||
-    request.path === '/generate'
-  ) {
-    return next();
-  }
-
-  return response.sendFile(path.join(clientDistPath, 'index.html'));
-});
-
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+// Only serve static files and handle client-side routing if not on Vercel
+if (!process.env.VERCEL) {
+  // Periodic cleanup prevents expired sessions and old limiter entries from piling up.
+  const cleanupTimer = setInterval(() => {
+    const now = Date.now();
+
+    for (const [sessionId, session] of sessions.entries()) {
+      if (session.expiresAt <= now) sessions.delete(sessionId);
+    }
+
+    for (const [key, entry] of rateLimitStore.entries()) {
+      if (entry.resetAt <= now) rateLimitStore.delete(key);
+    }
+  }, Math.min(SESSION_TTL_MS, 10 * 60 * 1000));
+
+  cleanupTimer.unref();
+
+  app.use(express.static(clientDistPath));
+
+  app.get('*', (request, response, next) => {
+    // Exclude API routes from serving index.html
+    if (
+      request.path.startsWith('/message') ||
+      request.path === '/messages' ||
+      request.path === '/generate' ||
+      request.path === '/health' // Added /health to the exclusion list
+    ) {
+      return next();
+    }
+
+    // For all other routes, serve the client's index.html
+    return response.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
