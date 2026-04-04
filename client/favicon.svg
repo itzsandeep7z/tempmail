@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bestLogo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#38bdf8" />
+      <stop offset="55%" stopColor="#3b82f6" />
+      <stop offset="100%" stopColor="#6366f1" />
+    </linearGradient>
+  </defs>
+  <path d="M20 10h24l10 18-10 18H20L10 28l10-18Z" fill="url(#bestLogo)" />
+  <path d="M21 24.5 32 33l11-8.5" fill="none" stroke="#f8fafc" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+  <path d="M24 29.5 20 40m20-10.5L44 40M18 19.5h28" fill="none" stroke="#f8fafc" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+</svg>
