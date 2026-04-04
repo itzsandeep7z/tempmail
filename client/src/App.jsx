@@ -622,7 +622,7 @@ function SignaturePanel({ theme }) {
       >
         Sandeep Patel
       </p>
-      <p className={classNames('mt-3 text-xs uppercase tracking-[0.24em]', theme.muted)}>tempmail.buzz</p>
+      <p className={classNames('mt-3 text-xs uppercase tracking-[0.24em]', theme.muted)}>FakeMail.xyz</p>
     </div>
   );
 }
