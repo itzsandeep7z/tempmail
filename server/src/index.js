@@ -12,11 +12,11 @@ const __dirname = path.dirname(__filename);
 const clientDistPath = path.resolve(__dirname, '../../client/dist');
 
 const PORT = Number(process.env.PORT || 8080);
-const MAIL_TM_BASE_URL = process.env.MAIL_TM_BASE_URL || 'https://api.mail.tm';
-const SESSION_TTL_MS = Number(process.env.SESSION_TTL_MS || 45 * 60 * 1000);
+const MAIL_TM_BASE_URL = process.env.MAIL_TM_BASE_URL;
+const SESSION_TTL_MS = Number(process.env.SESSION_TTL_MS;
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60 * 1000);
 const RATE_LIMIT_MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX_REQUESTS || 60);
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN;
 
 app.set('trust proxy', 1);
 app.use(express.json());
