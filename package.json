@@ -1,5 +1,5 @@
 {
-  "name": "tempmail-railway-monorepo",
+  "name": "tempmail-buzz",
   "version": "1.0.0",
   "private": true,
   "description": "Temporary email website built with React, Vite, Tailwind CSS, Express, and mail.tm",
@@ -16,4 +16,3 @@
     "node": ">=18"
   }
 }
-

@@ -1,5 +1,5 @@
 {
-  "name": "tempmail-server",
+  "name": "tempmail-buzz-server",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -14,4 +14,3 @@
     "express": "^4.21.2"
   }
 }
-
