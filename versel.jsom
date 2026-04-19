@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "outputDirectory": "client/dist",
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "outputDirectory": "client/dist"
+      }
+    },
+    {
+      "src": "server/src/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/generate",
+      "dest": "/server/src/index.js"
+    },
+    {
+      "src": "/messages",
+      "dest": "/server/src/index.js"
+    },
+    {
+      "src": "/message/(.*)",
+      "dest": "/server/src/index.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/server/src/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/$1"
+    }
+  ]
+}
