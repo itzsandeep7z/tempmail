@@ -275,7 +275,7 @@ function App() {
               </div>
               <div className="min-w-0">
                 <p className={classNames('text-xs font-semibold uppercase tracking-[0.34em]', theme.dark ? 'text-cyan-300' : 'text-sky-700')}>
-                  FakeMails xyz
+                  TempMail Buzz
                 </p>
                 <h1 className="display-font mt-2 max-w-xl text-3xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
                   Temporary email, done properly.
@@ -622,7 +622,7 @@ function SignaturePanel({ theme }) {
       >
         Sandeep Patel
       </p>
-      <p className={classNames('mt-3 text-xs uppercase tracking-[0.24em]', theme.muted)}>FakeMails.xyz</p>
+      <p className={classNames('mt-3 text-xs uppercase tracking-[0.24em]', theme.muted)}>TempMail Buzz</p>
     </div>
   );
 }
