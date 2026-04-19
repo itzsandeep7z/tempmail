@@ -2,15 +2,12 @@
   "name": "tempmail-buzz",
   "version": "1.0.0",
   "private": true,
-  "description": "Temporary email website built with React, Vite, Tailwind CSS, Express, and mail.tm",
+  "description": "TempMail Buzz frontend built with React, Vite, and Tailwind CSS",
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "build": "npm run build --prefix client && npm run build --prefix server",
-    "start": "npm run start --prefix server",
-    "postinstall": "npm install --prefix server && npm install --prefix client"
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.2"
+    "dev": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "preview": "npm run preview --prefix client",
+    "postinstall": "npm install --prefix client"
   },
   "engines": {
     "node": ">=18"

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = (import.meta.env.VITE_PRIVATE_API_URL || '').trim();
 const POLL_INTERVAL_MS = 5000;
 const SESSION_STORAGE_KEY = 'tempmail-buzz-session';
 
@@ -49,12 +49,21 @@ function isJsonContentType(contentType) {
   return contentType.includes('application/json') || contentType.includes('+json');
 }
 
-async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+async function request(action, payload = {}, options = {}) {
+  if (!API_BASE_URL) {
+    throw new Error('Private API URL is not configured.');
+  }
+
+  const response = await fetch(API_BASE_URL, {
+    method: options.method || 'POST',
     headers: {
       'Content-Type': 'application/json',
       ...(options.headers || {}),
     },
+    body: JSON.stringify({
+      action,
+      ...payload,
+    }),
     ...options,
   });
 
@@ -136,7 +145,7 @@ function App() {
     if (!silent) setLoadingInbox(true);
 
     try {
-      const data = await request(`/messages?sessionId=${encodeURIComponent(sessionId)}`);
+      const data = await request('messages', { sessionId });
       const nextMessages = data.messages || [];
       setMessages(nextMessages);
       if (!selectedMessageId && nextMessages.length) {
@@ -170,7 +179,7 @@ function App() {
     setMessageCache({});
 
     try {
-      const data = await request('/generate', { method: 'POST' });
+      const data = await request('generate');
       setSession(data);
       await loadMessages(data.sessionId);
     } catch (requestError) {
@@ -202,9 +211,10 @@ function App() {
 
     setLoadingMessage(true);
     try {
-      const data = await request(
-        `/message/${encodeURIComponent(messageId)}?sessionId=${encodeURIComponent(session.sessionId)}`,
-      );
+      const data = await request('message', {
+        messageId,
+        sessionId: session.sessionId,
+      });
       setMessageCache((currentCache) => ({ ...currentCache, [messageId]: data.message }));
       setSelectedMessage(data.message);
       setError('');
