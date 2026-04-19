@@ -32,6 +32,7 @@ const SESSION_TTL_MS = Number(process.env.SESSION_TTL_MS || 45 * 60 * 1000);
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60 * 1000);
 const RATE_LIMIT_MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX_REQUESTS || 60);
 const effectiveClientOrigin = CLIENT_ORIGIN || 'http://localhost:5173'; // Use a fallback for local dev
+const MAIL_TM_FALLBACK_DOMAIN = process.env.MAIL_TM_FALLBACK_DOMAIN || 'deltajohnsons.com';
 
 app.set('trust proxy', 1);
 app.use(express.json());
@@ -125,7 +126,15 @@ async function mailTmRequest(endpoint, options = {}) {
 }
 
 async function getAvailableDomain() {
-  const domainsPayload = await mailTmRequest('/domains?page=1');
+  let domainsPayload;
+
+  try {
+    domainsPayload = await mailTmRequest('/domains?page=1');
+  } catch (error) {
+    console.warn(`Falling back to configured mail domain because domain lookup failed: ${error.message}`);
+    return MAIL_TM_FALLBACK_DOMAIN;
+  }
+
   const domains = domainsPayload['hydra:member'] || [];
   const firstDomain =
     domains.find((domain) => {
@@ -135,6 +144,11 @@ async function getAvailableDomain() {
     }) || domains.find((domain) => Boolean(domain.domain));
 
   if (!firstDomain?.domain) {
+    if (MAIL_TM_FALLBACK_DOMAIN) {
+      console.warn('No active public domain returned by provider; using fallback mail domain.');
+      return MAIL_TM_FALLBACK_DOMAIN;
+    }
+
     const error = new Error('No email domains are available right now.');
     error.statusCode = 503;
     throw error;
