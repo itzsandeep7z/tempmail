@@ -1,6 +1,6 @@
-# TempMail Buzz
+# Temporary Mail Website
 
-TempMail Buzz is a temporary email project built with React and Node.js. It creates disposable email addresses through a simple web interface and keeps the full frontend-to-backend flow in one project.
+This is my temporary mail project built with React and Node.js. I made it to create disposable email addresses through a simple web interface and to keep the full flow working from frontend to backend in one project.
 
 ## Tech Stack
 
@@ -12,7 +12,7 @@ TempMail Buzz is a temporary email project built with React and Node.js. It crea
 
 ## About The Project
 
-The main idea behind TempMail Buzz was to build a temporary email website that feels fast and simple to use. The frontend stays clean while the backend handles the main logic and requests, with a structure that is easy to manage for local development and Vercel deployment.
+The main idea behind this project was to build a temporary email website that feels fast and simple to use. I wanted the frontend to stay clean while the backend handled the main logic and requests. I also wanted the project structure to be easy to manage for local development and deployment.
 
 ## Features
 
@@ -22,19 +22,19 @@ The main idea behind TempMail Buzz was to build a temporary email website that f
 - Backend handling for main mail operations
 - Single project setup for frontend and backend
 
-## Deployment
+## AI Integration
 
-This project is configured for Vercel hosting.
+I also explored the idea of adding AI-based features to this project. The goal was not to overcomplicate the current version, but to keep space for future improvements like message sorting, spam filtering, smart suggestions, or better user-side assistance.
 
-## Environment
+## Challenges Faced
 
-Use `server/.env.example` as the safe template for local development.
+- Syncing frontend requests with backend responses properly
+- Handling CORS and environment settings during development
+- Making the production build work correctly with both client and server
+- Keeping the code structure clean while working on multiple parts of the app
+- Planning AI-related ideas in a way that still makes sense for a real product
 
-- `MAIL_TM_BASE_URL`
-- `CLIENT_ORIGIN`
-- `PORT`
-- `SESSION_TTL_MS`
-- `RATE_LIMIT_WINDOW_MS`
-- `RATE_LIMIT_MAX_REQUESTS`
+## Notes
 
-Do not commit local `.env` files or secrets.
+- Private configuration is stored in environment variables.
+- Do not commit secrets or local `.env` files.

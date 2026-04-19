@@ -6,20 +6,32 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+// --- START: Environment Variable Validation ---
+const MAIL_TM_BASE_URL = process.env.MAIL_TM_BASE_URL;
+if (!MAIL_TM_BASE_URL) {
+  console.error('ERROR: MAIL_TM_BASE_URL environment variable is not set. This is required for the server to function.');
+  // Throwing an error here will cause the Vercel serverless function to fail initialization,
+  // which will be visible in the Vercel deployment logs.
+  throw new Error('MAIL_TM_BASE_URL environment variable is required.');
+}
+
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN;
+if (!CLIENT_ORIGIN) { // Corrected typo here
+  console.warn('WARNING: CLIENT_ORIGIN environment variable is not set. CORS might be too permissive or too restrictive.');
+  // For local development, a fallback is useful, but for Vercel, it should be explicitly set.
+}
+// --- END: Environment Variable Validation ---
+
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.resolve(__dirname, '../../client/dist');
-const isVercel = Boolean(process.env.VERCEL);
-const isDirectRun =
-  Boolean(process.argv[1]) && path.resolve(process.argv[1]) === __filename;
 
 const PORT = Number(process.env.PORT || 8080);
-const MAIL_TM_BASE_URL = process.env.MAIL_TM_BASE_URL || 'https://api.mail.tm';
 const SESSION_TTL_MS = Number(process.env.SESSION_TTL_MS || 45 * 60 * 1000);
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60 * 1000);
 const RATE_LIMIT_MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX_REQUESTS || 60);
-const effectiveClientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+const effectiveClientOrigin = CLIENT_ORIGIN || 'http://localhost:5173'; // Use a fallback for local dev
 
 app.set('trust proxy', 1);
 app.use(express.json());
@@ -266,7 +278,12 @@ app.use((error, _request, response, _next) => {
   });
 });
 
-if (!isVercel) {
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
+
+// Only serve static files and handle client-side routing if not on Vercel
+if (!process.env.VERCEL) {
   // Periodic cleanup prevents expired sessions and old limiter entries from piling up.
   const cleanupTimer = setInterval(() => {
     const now = Date.now();
@@ -299,11 +316,3 @@ if (!isVercel) {
     return response.sendFile(path.join(clientDistPath, 'index.html'));
   });
 }
-
-if (!isVercel && isDirectRun) {
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-  });
-}
-
-export default app;
